@@ -1,13 +1,33 @@
 import client from '../../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
-import { Title } from "@mantine/core"
+import { Title, Text, Image } from "@mantine/core"
+import Head from 'next/head';
 
 export default function Post({ post }) {
     return (
         <>
-            <Title>{post.attributes.title}</Title>
-            <ReactMarkdown>
+            <Head>
+                <title>{post.attributes.title}</title>
+                <meta property="og:title" content={post.attributes.title} />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} />
+                {/*<meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />*/}
+            </Head>
+
+            <Text sx={theme => ({
+                color: theme.colors.gray[6],
+                fontWeight: 'bold'
+            })}>Le {new Date(post.attributes.publishedAt).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+            <Title style={{
+                fontSize: '2.8rem'
+            }} sx={theme => ({
+                paddingBottom: theme.spacing.sm
+            })}>{post.attributes.title}</Title>
+            <Image height={350} src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
+            <ReactMarkdown transformImageUri={(src => {
+                return `http://localhost:1337${src}`;
+            })}>
                 {post.attributes.content}
             </ReactMarkdown>
         </>
@@ -22,6 +42,7 @@ export async function getServerSideProps(context) {
                     attributes {
                         title
                         content
+                        publishedAt
                         cover {
                             data {
                                 attributes {

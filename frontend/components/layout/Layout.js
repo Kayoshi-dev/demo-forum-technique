@@ -13,11 +13,15 @@ export default function CustomNavbar({ children }) {
             paddingTop: theme.spacing.xl
         })}>
             <Link href="/" passHref>
-                <Title order={1} style={{ fontSize: "3rem" }} sx={(theme) => ({
+                <Title order={1} style={{ fontSize: "5rem" }} sx={(theme) => ({
                     '&:hover': {
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        color: theme.colors.blue[6],
                     },
-                    paddingBottom: theme.spacing.xl
+                    paddingBottom: theme.spacing.xl,
+                    display: 'inline-block',
+                    transition: 'all .3s'
                 })}>Mon blog</Title>
             </Link>
             {children}
