@@ -1,7 +1,7 @@
 import client from '../../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
-import { Title, Text, Image } from "@mantine/core"
+import {Title, Text, Container, Image} from "@mantine/core"
 import Head from 'next/head';
 
 export default function Post({ post }) {
@@ -25,11 +25,15 @@ export default function Post({ post }) {
                 paddingBottom: theme.spacing.sm
             })}>{post.attributes.title}</Title>
             <Image height={350} src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
-            <ReactMarkdown transformImageUri={(src => {
-                return `http://localhost:1337${src}`;
-            })}>
-                {post.attributes.content}
-            </ReactMarkdown>
+            <Container>
+                <ReactMarkdown transformImageUri={(src => {
+                    return `http://localhost:1337${src}`;
+                })} components={{
+                    img: ({node, ...props}) => <Image {...props} />
+                }}>
+                    {post.attributes.content}
+                </ReactMarkdown>
+            </Container>
         </>
     )
 }

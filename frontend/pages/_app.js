@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import {MantineProvider} from '@mantine/core';
 import Layout from '../components/layout/Layout';
+import '../styles/globals.css';
 
 export default function App(props) {
     const {Component, pageProps} = props;
@@ -17,6 +18,8 @@ export default function App(props) {
                 withNormalizeCSS
                 theme={{
                     colorScheme: 'light',
+                    fontFamily: 'Poppins, sans-serif',
+                    headings: { fontFamily: 'Poppins, sans-serif' },
                 }}
             >
                 <Layout>

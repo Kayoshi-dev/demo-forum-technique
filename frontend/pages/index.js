@@ -27,9 +27,11 @@ export default function Home({ firstPost, posts }) {
     // Remove titles by filtering the lines starting with a # (which is a title in Markdown)
     const getDescription = content => content.split(/\r?\n/).filter(arr => arr).filter(el => !el.startsWith('#')).slice(0, 1).toString();
 
+    const formatDate = date => new Date(date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
     return (
         <Grid>
-            <Col span={7} mb="xl" sm={12}>
+            <Col span={12} md={7} mb="xl">
                 <Box sx={() => ({
                     '&:hover': {
                         cursor: 'pointer'
@@ -41,14 +43,17 @@ export default function Home({ firstPost, posts }) {
                 </Box>
             </Col>
 
-            <Col span={5} sm={12}>
+            <Col span={12} md={5}>
                 <Link href={`/post/${firstPost.attributes.slug}`} passHref>
                     <Box sx={{
                         '&:hover': {
-                            cursor: "pointer"
+                            cursor: 'pointer'
                         }
                     }}>
-                        <Text color="gray">{firstPost.attributes.publishedAt}</Text>
+                        <Group position="apart" style={{marginBottom: 5, marginTop: theme.spacing.sm}}>
+                            <Text color="gray">Publié le {formatDate(firstPost.attributes.publishedAt)}</Text>
+                            <Badge variant="filled" color="red">Nouveau</Badge>
+                        </Group>
                         <Title style={{ fontSize: "3rem" }} sx={(theme) => ({
                             paddingBottom: theme.spacing.lg,
                             display: 'inline-block',
@@ -66,21 +71,15 @@ export default function Home({ firstPost, posts }) {
             </Col>
 
             {posts.map(post =>
-                <Col span={4} key={post.id}>
+                <Col span={12} sm={6} md={4} key={post.id}>
                     <Card shadow="sm" padding="lg" component="a" href={`/post/${post.attributes.slug}`}>
                         <Card.Section>
                             <Image src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} height={160} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
                         </Card.Section>
 
-                        <Group position="apart" style={{marginBottom: 5, marginTop: theme.spacing.sm}}>
-                            <Text color="#898a8d" weight={500}>{post.attributes.title}</Text>
-                            <Badge color="pink" variant="light">
-                                Nouveau!
-                            </Badge>
-                        </Group>
-
+                        <Text style={{marginBottom: 5, marginTop: theme.spacing.sm}} color="#898a8d" weight={500}>{post.attributes.title}</Text>
                         <Text size="sm" style={{color: secondaryColor, lineHeight: 1.5}}>
-                            Posté le {new Date(post.attributes.publishedAt).toISOString()}
+                            Posté le {formatDate(post.attributes.publishedAt)}
                         </Text>
 
                         <Button variant="light" color="blue" fullWidth style={{marginTop: 14}}>
