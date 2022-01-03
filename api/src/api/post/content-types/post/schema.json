@@ -34,10 +34,11 @@
       "targetField": "title",
       "required": true
     },
-    "author": {
+    "category": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "admin::user"
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "posts"
     }
   }
 }
