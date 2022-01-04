@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import {MantineProvider} from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import Layout from '../components/layout/Layout';
 import '../styles/globals.css';
 
@@ -9,7 +10,7 @@ export default function App(props) {
     return (
         <>
             <Head>
-                <title>Page title</title>
+                <title>Accueil</title>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
                 <meta name="description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" />
             </Head>
@@ -23,9 +24,11 @@ export default function App(props) {
                     headings: { fontFamily: 'Poppins, sans-serif' },
                 }}
             >
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
+                <NotificationsProvider position="top-right" zIndex={2077}>
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
+                </NotificationsProvider>
             </MantineProvider>
         </>
     );

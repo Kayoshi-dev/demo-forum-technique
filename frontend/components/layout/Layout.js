@@ -1,16 +1,58 @@
 import {
     Container,
     Title,
-    Group, Text, Menu, Divider, MediaQuery, Burger, useMantineTheme
+    Group,
+    Text,
+    Menu,
+    useMantineTheme,
+    Skeleton
 } from "@mantine/core";
 import Link from 'next/link';
 import {useState} from "react";
-import client from "../../apollo-client";
-import {gql} from "@apollo/client";
+import useSWR from "swr";
+import { useNotifications } from '@mantine/notifications';
+import {useEffect} from "react";
+
+const query = `
+    {
+        categories {
+            data {
+                attributes {
+                    title
+                }
+                id
+            }
+        }
+    }
+`;
 
 export default function CustomNavbar({ children }) {
     const [opened, setOpened] = useState(false);
     const theme = useMantineTheme();
+    const notifications = useNotifications();
+
+    // Had some problems to make it work with Apollo sowwy (´；ω；`)
+    const fetcher = async () => {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_URL, {
+            body: JSON.stringify({query}),
+            headers: { "Content-type": "application/json" },
+            method: "POST"
+        });
+        const { data } = await response.json();
+        return data;
+    };
+
+    const { data: categories, error } = useSWR(query, fetcher, { refreshInterval: 5000, revalidateOnFocus: false });
+
+    useEffect(() => {
+        if(error) {
+            notifications.showNotification({
+                title: "Une erreur est survenue !",
+                message: "Erreur lors du chargement des catégories du blog",
+                color: "red"
+            });
+        }
+    }, [error]); // (゜´Д｀゜)
 
     return (
         <Container size="xl" sx={(theme) => ({
@@ -38,18 +80,11 @@ export default function CustomNavbar({ children }) {
                     </Link>
 
                     <Menu control={<Text style={{ cursor: "pointer" }} component="a" weight={500}>Catégorie</Text>}>
-                        {/*{categories.map(category => <Menu.Item key={category.id}>{category.attributes.title}</Menu.Item>)}*/}
-                        <Menu.Item
-                            rightSection={<Text size="xs" color="dimmed">⌘K</Text>}
-                        >
-                            Search
-                        </Menu.Item>
-
-                        <Divider />
-
-                        <Menu.Label>Danger zone</Menu.Label>
-                        <Menu.Item>Transfer my data</Menu.Item>
-                        <Menu.Item color="red">Delete my account</Menu.Item>
+                        <Menu.Label>Nos catégories</Menu.Label>
+                        {!categories ?
+                            <Skeleton height={8} radius="xl" /> :
+                            categories.categories.data.map(category => <Menu.Item key={category.id}>{category.attributes.title}</Menu.Item>)
+                        }
                     </Menu>
 
                     <Link href="/" passHref>
