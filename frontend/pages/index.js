@@ -10,14 +10,13 @@ import {
     Col,
     useMantineTheme,
     Title,
-    Box,
-    Portal, Menu, Divider
+    Box
 } from '@mantine/core';
 import client from '../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
 
-export default function Home({ firstPost, posts, categories }) {
+export default function Home({ firstPost, posts }) {
     const theme = useMantineTheme();
 
     const secondaryColor = theme.colorScheme === 'dark'
@@ -71,26 +70,28 @@ export default function Home({ firstPost, posts, categories }) {
 
             {posts.map(post =>
                 <Col span={12} sm={6} md={4} key={post.id}>
-                    <Card shadow="sm" padding="lg" component="a" href={`/post/${encodeURIComponent(post.attributes.slug)}`}>
-                        <Card.Section>
-                            <Image src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} height={160} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
-                        </Card.Section>
+                    <Link href={`/post/${encodeURIComponent(post.attributes.slug)}`} passHref>
+                        <Card shadow="sm" padding="lg" component="a">
+                            <Card.Section>
+                                <Image src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} height={160} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
+                            </Card.Section>
 
-                        <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
-                            <Text color="#898a8d" weight={500}>{post.attributes.title}</Text>
-                            {post.attributes.category.data &&
-                                <Badge color={post.attributes.category.data.attributes.color}>{post.attributes.category.data.attributes.title}</Badge>
-                            }
-                        </Group>
+                            <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
+                                <Text weight={500}>{post.attributes.title}</Text>
+                                {post.attributes.category.data &&
+                                    <Badge color={post.attributes.category.data.attributes.color}>{post.attributes.category.data.attributes.title}</Badge>
+                                }
+                            </Group>
 
-                        <Text size="sm" style={{color: secondaryColor, lineHeight: 1.5}}>
-                            Posté le {formatDate(post.attributes.publishedAt)}
-                        </Text>
+                            <Text size="sm" style={{color: secondaryColor, lineHeight: 1.5}}>
+                                Posté le {formatDate(post.attributes.publishedAt)}
+                            </Text>
 
-                        <Button variant="light" color="blue" fullWidth style={{marginTop: 14}}>
-                            Voir l&apos;article
-                        </Button>
-                    </Card>
+                            <Button variant="light" color="blue" fullWidth style={{marginTop: 14}}>
+                                Voir l&apos;article
+                            </Button>
+                        </Card>
+                    </Link>
                 </Col>
             )}
         </Grid>
@@ -101,13 +102,6 @@ export async function getStaticProps() {
     const { data } = await client.query({
         query: gql`
             query PostsQuery {
-                categories {
-                    data {
-                        attributes {
-                            title
-                        }
-                    }
-                }
                 posts {
                     data {
                         id
@@ -144,7 +138,7 @@ export async function getStaticProps() {
     const reverse = data.posts.data.reverse();
 
     return {
-        props: { firstPost: reverse.shift(), posts: reverse, categories: data.categories.data },
+        props: { firstPost: reverse.shift(), posts: reverse },
         revalidate: 60
     }
 }
