@@ -38,7 +38,7 @@ export default function Home({ firstPost, posts }) {
                             cursor: 'pointer'
                         }
                     }}>
-                        <Image src={`http://localhost:1337${firstPost.attributes.cover.data.attributes.url}`} radius="sm" height={350} alt={firstPost.attributes.cover.data.attributes.alternativeText} withPlaceholder />
+                        <Image src={`http://localhost:1337${firstPost.attributes.cover.data.attributes.url}`} radius="sm" height={350} alt={firstPost.attributes.cover.data.attributes.alternativeText} sx={{ boxShadow: theme.shadows.sm }} withPlaceholder />
                     </Box>
                 </Link>
             </Col>
@@ -50,7 +50,12 @@ export default function Home({ firstPost, posts }) {
                     }}>
                         <Group position="apart" style={{marginBottom: 5, marginTop: theme.spacing.sm}}>
                             <Text color="gray">Publié le {formatDate(firstPost.attributes.publishedAt)}</Text>
-                            <Badge variant="filled" color="red">Nouveau</Badge>
+                            <Group spacing="sm">
+                                {firstPost.attributes.category.data &&
+                                    <Badge color={firstPost.attributes.category.data.attributes.color}>{firstPost.attributes.category.data.attributes.title}</Badge>
+                                }
+                                <Badge variant="filled" color="red">Nouveau</Badge>
+                            </Group>
                         </Group>
                         <Title style={{ fontSize: "3rem" }} sx={(theme) => ({
                             paddingBottom: theme.spacing.lg,

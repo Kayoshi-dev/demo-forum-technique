@@ -24,7 +24,7 @@ export default function App(props) {
                     headings: { fontFamily: 'Poppins, sans-serif' },
                 }}
             >
-                <NotificationsProvider position="top-right" zIndex={2077}>
+                <NotificationsProvider position="bottom-right" zIndex={2077}>
                     <Layout>
                         <Component {...pageProps} />
                     </Layout>
