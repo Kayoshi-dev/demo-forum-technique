@@ -1,7 +1,8 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+import {getApiUrl} from "./lib/utils";
 
 const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_API_URL,
+    uri: getApiUrl(),
     cache: new InMemoryCache(),
     defaultOptions: {
         query: {

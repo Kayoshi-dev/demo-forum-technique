@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { ChevronDownIcon } from "@modulz/radix-icons";
 import { createStyles } from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
+import {getApiUrl} from "../../lib/utils";
 
 const query = `
     {
@@ -58,7 +59,7 @@ export default function CustomNavbar({ children }) {
 
     // Had some problems to make it work with Apollo sowwy (´；ω；`)
     const fetcher = async () => {
-        const response = await fetch(process.env.NEXT_PUBLIC_API_URL, {
+        const response = await fetch(getApiUrl(), {
             body: JSON.stringify({query}),
             headers: { "Content-type": "application/json" },
             method: "POST"

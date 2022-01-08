@@ -15,6 +15,7 @@ import {
 import client from '../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
+import {getEnvUrl} from "../lib/utils";
 
 export default function Home({ firstPost, posts }) {
     const theme = useMantineTheme();
@@ -38,7 +39,7 @@ export default function Home({ firstPost, posts }) {
                             cursor: 'pointer'
                         }
                     }}>
-                        <Image src={`http://localhost:1337${firstPost.attributes.cover.data.attributes.url}`} radius="sm" height={350} alt={firstPost.attributes.cover.data.attributes.alternativeText} sx={{ boxShadow: theme.shadows.sm }} withPlaceholder />
+                        <Image src={`${getEnvUrl()}${firstPost.attributes.cover.data.attributes.url}`} radius="sm" height={350} alt={firstPost.attributes.cover.data.attributes.alternativeText} sx={{ boxShadow: theme.shadows.sm }} withPlaceholder />
                     </Box>
                 </Link>
             </Col>
@@ -78,7 +79,7 @@ export default function Home({ firstPost, posts }) {
                     <Link href={`/post/${encodeURIComponent(post.attributes.slug)}`} passHref>
                         <Card shadow="sm" padding="lg" component="a">
                             <Card.Section>
-                                <Image src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} height={160} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
+                                <Image src={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} height={160} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
                             </Card.Section>
 
                             <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>

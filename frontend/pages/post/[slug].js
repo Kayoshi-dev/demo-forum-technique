@@ -23,13 +23,15 @@ import slugify from "slugify";
 import { Link2Icon, TwitterLogoIcon, ReaderIcon } from '@modulz/radix-icons';
 import {useClipboard, useMediaQuery, useWindowScroll} from "@mantine/hooks";
 import Link from "next/link"
+import {getEnvUrl} from "../../lib/utils";
 
 export default function Post({ post }) {
     const router = useRouter();
     const clipboard = useClipboard({ timeout: 500 });
     const theme = useMantineTheme();
     const superiorMedium = useMediaQuery(`(min-width: ${theme.breakpoints.md}px)`);
-    const [scroll, scrollTo] = useWindowScroll();
+    const [scroll] = useWindowScroll();
+
 
     if (router.isFallback) {
         return (
@@ -78,7 +80,7 @@ export default function Post({ post }) {
                 <title>{post.attributes.title}</title>
                 <meta property="og:title" content={post.attributes.title} />
                 <meta property="og:type" content="article" />
-                <meta property="og:image" content={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} />
+                <meta property="og:image" content={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} />
                 {/*<meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />*/}
             </Head>
 
@@ -96,7 +98,7 @@ export default function Post({ post }) {
             }} sx={theme => ({
                 paddingBottom: theme.spacing.sm
             })}>{post.attributes.title}</Title>
-            <Image height={350} src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} sx={(theme) => ({ paddingBottom: theme.spacing.sm })} withPlaceholder />
+            <Image height={350} src={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} sx={(theme) => ({ paddingBottom: theme.spacing.sm })} withPlaceholder />
 
             <Group position="apart">
                 <div>
@@ -143,7 +145,7 @@ export default function Post({ post }) {
                     })}>{chapter}</Anchor></List.Item>)}
                 </List>
                 <ReactMarkdown transformImageUri={(src => {
-                    return `http://localhost:1337${src}`;
+                    return `${getEnvUrl()}${src}`;
                 })} components={{
                     // Pretty sure I can refactor this 😂
                     img: ({node, ...props}) => <Image {...props} />,
