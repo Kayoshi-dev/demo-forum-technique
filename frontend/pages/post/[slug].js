@@ -1,13 +1,35 @@
 import client from '../../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
-import {Title, Text, Container, Image, Skeleton, Grid, Center, Group} from "@mantine/core"
+import {
+    Title,
+    Text,
+    Container,
+    Image,
+    Skeleton,
+    Group,
+    Badge,
+    Anchor,
+    Button,
+    useMantineTheme,
+    List,
+    Affix,
+    Menu,
+    Transition
+} from "@mantine/core"
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import slugify from "slugify";
+import { Link2Icon, TwitterLogoIcon, ReaderIcon } from '@modulz/radix-icons';
+import {useClipboard, useMediaQuery, useWindowScroll} from "@mantine/hooks";
+import Link from "next/link"
 
 export default function Post({ post }) {
-    const router = useRouter()
+    const router = useRouter();
+    const clipboard = useClipboard({ timeout: 500 });
+    const theme = useMantineTheme();
+    const superiorMedium = useMediaQuery(`(min-width: ${theme.breakpoints.md}px)`);
+    const [scroll, scrollTo] = useWindowScroll();
 
     if (router.isFallback) {
         return (
@@ -47,7 +69,7 @@ export default function Post({ post }) {
 
     // Returns an array of indexed titles
     const getTableOfContent = () => {
-        return getTitles().map((title, i) => title.replace(regexTitle, `${i + 1}. `));
+        return getTitles().map((title) => title.replace(regexTitle, ''));
     }
 
     return (
@@ -60,45 +82,93 @@ export default function Post({ post }) {
                 {/*<meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />*/}
             </Head>
 
-            <Text sx={theme => ({
-                color: theme.colors.gray[6],
-                fontWeight: 'bold'
-            })}>Le {new Date(post.attributes.publishedAt).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+            <Group spacing="sm">
+                <Text sx={theme => ({
+                    color: theme.colors.gray[6],
+                    fontWeight: 'bold'
+                })}>Le {new Date(post.attributes.publishedAt).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+                {post.attributes.category.data &&
+                    <Badge color={post.attributes.category.data.attributes.color}>{post.attributes.category.data.attributes.title}</Badge>
+                }
+            </Group>
             <Title style={{
                 fontSize: '2.8rem'
             }} sx={theme => ({
                 paddingBottom: theme.spacing.sm
             })}>{post.attributes.title}</Title>
-            <Image height={350} src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
-            <Grid sx={(theme) => ({
-                marginLeft: theme.spacing.xl
-            })}>
-                <Grid.Col span={9}>
-                    <ReactMarkdown transformImageUri={(src => {
-                        return `http://localhost:1337${src}`;
-                    })} components={{
-                        // Pretty sure I can refactor this 😂
-                        img: ({node, ...props}) => <Image {...props} />,
-                        h1: ({node, ...props}) => <h1 id={slugify(node.children[0].value, { lower: true})} {...props} />,
-                        h2: ({node, ...props}) => <h2 id={slugify(node.children[0].value, { lower: true})} {...props} />,
-                        h3: ({node, ...props}) => <h3 id={slugify(node.children[0].value, { lower: true})} {...props} />,
-                        h4: ({node, ...props}) => <h4 id={slugify(node.children[0].value, { lower: true})} {...props} />,
-                        h5: ({node, ...props}) => <h5 id={slugify(node.children[0].value, { lower: true})} {...props} />,
-                        h6: ({node, ...props}) => <h6 id={slugify(node.children[0].value, { lower: true})} {...props} />,
-                    }}>
-                        {post.attributes.content}
-                    </ReactMarkdown>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <Center sx={(theme) => ({
-                        marginTop: theme.spacing.xl
+            <Image height={350} src={`http://localhost:1337${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} sx={(theme) => ({ paddingBottom: theme.spacing.sm })} withPlaceholder />
+
+            <Group position="apart">
+                <div>
+
+                </div>
+
+                <Group spacing="sm">
+                    <Button leftIcon={<Link2Icon />} onClick={() => clipboard.copy(window.location.href)} sx={(theme) => ({
+                        backgroundColor: "#E3E6EC",
+                        borderColor: theme.colors.dark[6],
+                        color: theme.colors.dark[6],
+
+                        '&:hover': {
+                            backgroundColor: theme.colors.gray[4]
+                        }
                     })}>
-                        <Group direction="column">
-                            {getTableOfContent().map((chapter, i) => <a href={`#${getTitles(true)[i]}`} key={i}>{chapter}</a>)}
-                        </Group>
-                    </Center>
-                </Grid.Col>
-            </Grid>
+                        Copier le lien
+                    </Button>
+
+                    {superiorMedium ?
+                        <Button leftIcon={<TwitterLogoIcon />} onClick={() => clipboard.copy({ copy: window.location.href })}>
+                            Partager sur Twitter
+                        </Button> :
+                        <Button leftIcon={<TwitterLogoIcon />} styles={({
+                            leftIcon: {
+                                marginRight: 0,
+                            },
+                        })} onClick={() => clipboard.copy({ copy: window.location.href })} />
+                    }
+                </Group>
+            </Group>
+
+            <Container>
+                <Title order={2}>Sommaire</Title>
+                <List type="ordered">
+                    {getTableOfContent().map((chapter, i) => <List.Item key={i}><Anchor href={`#${getTitles(true)[i]}`} sx={(theme) => ({
+                        color: theme.colors.dark[6],
+                        fontWeight: 600,
+                        textDecoration: "none",
+
+                        '&:hover': {
+                            textDecoration: "underline"
+                        }
+                    })}>{chapter}</Anchor></List.Item>)}
+                </List>
+                <ReactMarkdown transformImageUri={(src => {
+                    return `http://localhost:1337${src}`;
+                })} components={{
+                    // Pretty sure I can refactor this 😂
+                    img: ({node, ...props}) => <Image {...props} />,
+                    h1: ({node, ...props}) => <h1 id={slugify(node.children[0].value, { lower: true })} {...props} />,
+                    h2: ({node, ...props}) => <h2 id={slugify(node.children[0].value, { lower: true })} {...props} />,
+                    h3: ({node, ...props}) => <h3 id={slugify(node.children[0].value, { lower: true })} {...props} />,
+                    h4: ({node, ...props}) => <h4 id={slugify(node.children[0].value, { lower: true })} {...props} />,
+                    h5: ({node, ...props}) => <h5 id={slugify(node.children[0].value, { lower: true })} {...props} />,
+                    h6: ({node, ...props}) => <h6 id={slugify(node.children[0].value, { lower: true })} {...props} />,
+                }}>
+                    {post.attributes.content}
+                </ReactMarkdown>
+            </Container>
+
+            <Affix position={{ bottom: 20, right: 20 }}>
+                <Transition transition="slide-up" mounted={scroll.y > 700}>
+                    {(transitionStyles) => (
+                        <Menu style={transitionStyles} control={<Button type="button" leftIcon={<ReaderIcon />}>Sommaire</Button>}>
+                            <Menu.Label>{post.attributes.title}</Menu.Label>
+                            {/* Strange Behavior happening here with Anchor and a tag, but it works with Link, don't ask me why */}
+                            {getTableOfContent().map((chapter, i) => <Menu.Item key={i}><Link href={`#${getTitles(true)[i]}`}><a style={{ color: "black", textDecoration: "none" }}>{chapter}</a></Link></Menu.Item>)}
+                        </Menu>
+                    )}
+                </Transition>
+            </Affix>
         </>
     )
 }
@@ -153,6 +223,14 @@ export async function getStaticProps(context) {
                             data {
                                 attributes {
                                     url
+                                }
+                            }
+                        }
+                        category {
+                            data {
+                                attributes {
+                                    title
+                                    color
                                 }
                             }
                         }

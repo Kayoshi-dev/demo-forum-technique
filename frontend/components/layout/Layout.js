@@ -15,7 +15,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { useNotifications } from '@mantine/notifications';
 import { useEffect } from "react";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon } from "@modulz/radix-icons";
 import { createStyles } from "@mantine/core";
 import {useMediaQuery} from "@mantine/hooks";
 
@@ -123,7 +123,6 @@ export default function CustomNavbar({ children }) {
                                     return <Menu.Item component="a" href={`/categorie/${category.attributes.slug}`} key={category.id} >{category.attributes.title}</Menu.Item>
                                 })
                             }
-                            fzefezfez
                         </Menu>
 
                         <Link href="/" passHref>
