@@ -78,11 +78,11 @@ export default function Post({ post }) {
         <>
             <Head>
                 <title>{post.attributes.title}</title>
-                <meta property="og:title" content={post.attributes.title} />
+                <meta property="og:title" content={post.attributes.title} key="title" />
                 <meta property="og:type" content="article" />
                 <meta property="og:image" content={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} />
-                <meta property="og:description" content={getDescription(post.attributes.content)} key="description" />
-                <meta name="description" content={getDescription(post.attributes.content)} />
+                <meta property="og:description" content={getDescription(post.attributes.content)} key="og:description" />
+                <meta name="description" content={getDescription(post.attributes.content)} key="description" />
                 {/*<meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />*/}
             </Head>
 

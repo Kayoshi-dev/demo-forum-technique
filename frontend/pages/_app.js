@@ -12,10 +12,10 @@ export default function App(props) {
             <Head>
                 <title>Accueil</title>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
-                <meta name="description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" />
+                <meta name="description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" key="description" />
                 <meta name="twitter:card" content="summary" />
-                <meta property="og:title" content="Mon blog" />
-                <meta property="og:description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" key="description" />
+                <meta property="og:title" content="Mon blog" key="title" />
+                <meta property="og:description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" key="og:description" />
             </Head>
 
             <MantineProvider
