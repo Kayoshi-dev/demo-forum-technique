@@ -7,5 +7,5 @@ export function getApiUrl() {
 }
 
 export function getEnvUrl() {
-    return process.env.NODE_ENV === "production" ? "https://demo-ft-strapi.herokuapp.com" : "http://localhost:1337"
+    return process.env.NODE_ENV === "production" ? "https://demo-ft-strapi.herokuapp.com" : ""
 }
