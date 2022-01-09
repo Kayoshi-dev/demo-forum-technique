@@ -13,6 +13,9 @@ export default function App(props) {
                 <title>Accueil</title>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/>
                 <meta name="description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" />
+                <meta name="twitter:card" content="summary" />
+                <meta property="og:title" content="Mon blog" />
+                <meta property="og:description" content="Un simple blog permettant de montrer l'efficacité de la JamStack !" key="description" />
             </Head>
 
             <MantineProvider

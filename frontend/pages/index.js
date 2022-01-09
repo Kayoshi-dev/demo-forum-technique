@@ -15,7 +15,7 @@ import {
 import client from '../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
-import {getEnvUrl} from "../lib/utils";
+import {getDescription, getEnvUrl} from "../lib/utils";
 
 export default function Home({ firstPost, posts }) {
     const theme = useMantineTheme();
@@ -23,10 +23,6 @@ export default function Home({ firstPost, posts }) {
     const secondaryColor = theme.colorScheme === 'dark'
         ? theme.colors.dark[1]
         : theme.colors.gray[7];
-
-    // Code golf here I come
-    // Remove titles by filtering the lines starting with a # (which is a title in Markdown)
-    const getDescription = content => content.split(/\r?\n/).filter(arr => arr).filter(el => !el.startsWith('#')).slice(0, 1).toString();
 
     const formatDate = date => new Date(date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 

@@ -23,7 +23,7 @@ import slugify from "slugify";
 import { Link2Icon, TwitterLogoIcon, ReaderIcon } from '@modulz/radix-icons';
 import {useClipboard, useMediaQuery, useWindowScroll} from "@mantine/hooks";
 import Link from "next/link"
-import {getEnvUrl} from "../../lib/utils";
+import {getDescription, getEnvUrl} from "../../lib/utils";
 
 export default function Post({ post }) {
     const router = useRouter();
@@ -81,6 +81,8 @@ export default function Post({ post }) {
                 <meta property="og:title" content={post.attributes.title} />
                 <meta property="og:type" content="article" />
                 <meta property="og:image" content={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} />
+                <meta property="og:description" content={getDescription(post.attributes.content)} key="description" />
+                <meta name="description" content={getDescription(post.attributes.content)} />
                 {/*<meta property="og:url" content={typeof window !== "undefined" ? window.location.href : ''} />*/}
             </Head>
 
@@ -100,11 +102,9 @@ export default function Post({ post }) {
             })}>{post.attributes.title}</Title>
             <Image height={350} src={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} sx={(theme) => ({ paddingBottom: theme.spacing.sm })} withPlaceholder />
 
-            <Group position="apart">
-                <div>
-
-                </div>
-
+            <Group position="right" sx={(theme) => ({
+                marginBottom: theme.spacing.md
+            })}>
                 <Group spacing="sm">
                     <Button leftIcon={<Link2Icon />} onClick={() => clipboard.copy(window.location.href)} sx={(theme) => ({
                         backgroundColor: "#E3E6EC",
@@ -119,14 +119,14 @@ export default function Post({ post }) {
                     </Button>
 
                     {superiorMedium ?
-                        <Button leftIcon={<TwitterLogoIcon />} onClick={() => clipboard.copy({ copy: window.location.href })}>
+                        <Button leftIcon={<TwitterLogoIcon />} onClick={() => window.open(`https://twitter.com/intent/tweet?text=Jetez%20un%20coup%20d%27oeil%20a%20cet%20article%20%3A&url=${encodeURIComponent(window.location.href)}`)}>
                             Partager sur Twitter
                         </Button> :
                         <Button leftIcon={<TwitterLogoIcon />} styles={({
                             leftIcon: {
                                 marginRight: 0,
                             },
-                        })} onClick={() => clipboard.copy({ copy: window.location.href })} />
+                        })} onClick={() => window.open(`https://twitter.com/intent/tweet?text=Jetez%20un%20coup%20d%27oeil%20a%20cet%20article%20%3A&url=${encodeURIComponent(window.location.href)}`)} />
                     }
                 </Group>
             </Group>
