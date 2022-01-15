@@ -1,13 +1,13 @@
 import Head from "next/head";
-import {Title, Image, Group, Text, Grid, useMantineTheme, createStyles} from "@mantine/core";
+import {Title, Image, Group, Text, Grid, useMantineTheme, createStyles, Skeleton, Container} from "@mantine/core";
 import {gql} from "@apollo/client";
 import client from "../../apollo-client";
 import {formatDate, getEnvUrl} from "../../lib/utils";
 import PostCard from "../../components/PostCard";
-import {useMediaQuery} from "@mantine/hooks";
 import Link from "next/link";
 import MainCategoryCard from "../../components/MainCategoryCard";
 import dynamic from "next/dynamic";
+import {useRouter} from "next/router";
 
 // Hide the end of title if it's too long
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -25,14 +25,36 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 export default function Categorie({ firstPost, data }) {
+    const { classes } = useStyles();
+    const router = useRouter();
+
+    if (router.isFallback) {
+        return (
+            <>
+                <Skeleton height={45} width={500} mt={6} radius="md" />
+                <Skeleton height={350} mt={6} radius="sm" />
+
+                <Container>
+                    <Skeleton height={40} width={450} mt={20} radius="xl" />
+                    {[...Array(20)].map((_, i) => {
+                        return (
+                            <Skeleton key={i} height={12} mt={14} radius="xl" />
+                        )
+                    })}
+
+                    <Skeleton height={12} mt={12} width="70%" radius="xl" />
+                </Container>
+            </>
+        )
+    }
+
+
     const MainCategoryCard = dynamic(
         () => import('../../components/MainCategoryCard'),
         {
             ssr: false
         }
     )
-
-    const { classes } = useStyles();
 
     return (
         <>

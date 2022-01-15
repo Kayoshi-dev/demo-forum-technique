@@ -100,7 +100,7 @@ export default function Post({ post }) {
             }} sx={theme => ({
                 paddingBottom: theme.spacing.sm
             })}>{post.attributes.title}</Title>
-            <Image height={350} src={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} sx={(theme) => ({ paddingBottom: theme.spacing.sm })} withPlaceholder />
+            <Image height={350} radius="md" src={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} alt={post.attributes.cover.data.attributes.alternativeText} sx={(theme) => ({ paddingBottom: theme.spacing.sm })} withPlaceholder />
 
             <Group position="right" sx={(theme) => ({
                 marginBottom: theme.spacing.md
