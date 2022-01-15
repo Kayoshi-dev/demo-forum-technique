@@ -107,12 +107,12 @@ export default function Post({ post }) {
             })}>
                 <Group spacing="sm">
                     <Button leftIcon={<Link2Icon />} onClick={() => clipboard.copy(window.location.href)} sx={(theme) => ({
-                        backgroundColor: "#E3E6EC",
+                        backgroundColor: "#f7f8fc",
                         borderColor: theme.colors.dark[6],
                         color: theme.colors.dark[6],
 
                         '&:hover': {
-                            backgroundColor: theme.colors.gray[4]
+                            backgroundColor: theme.colors.gray[2]
                         }
                     })}>
                         Copier le lien

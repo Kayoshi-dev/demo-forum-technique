@@ -21,3 +21,5 @@ export function getEnvUrl() {
  * @returns {*}
  */
 export const getDescription = content => content.split(/\r?\n/).filter(arr => arr).filter(el => !el.startsWith('#')).slice(0, 1).toString();
+
+export const formatDate = date => new Date(date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });

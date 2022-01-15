@@ -10,93 +10,72 @@ import {
     Col,
     useMantineTheme,
     Title,
-    Box
+    Box, Space
 } from '@mantine/core';
 import client from '../apollo-client';
 import { gql } from '@apollo/client';
 import ReactMarkdown from "react-markdown";
-import {getDescription, getEnvUrl} from "../lib/utils";
+import {formatDate, getDescription, getEnvUrl} from "../lib/utils";
+import { CalendarIcon } from "@modulz/radix-icons";
+import PostCard from "../components/PostCard";
 
 export default function Home({ firstPost, posts }) {
     const theme = useMantineTheme();
 
-    const secondaryColor = theme.colorScheme === 'dark'
-        ? theme.colors.dark[1]
-        : theme.colors.gray[7];
-
-    const formatDate = date => new Date(date).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
     return (
-        <Grid>
-            <Col span={12} md={7} mb="xl">
-                <Link href={`/post/${encodeURIComponent(firstPost.attributes.slug)}`} passHref>
-                    <Box component="a" sx={{
-                        '&:hover': {
-                            cursor: 'pointer'
-                        }
-                    }}>
-                        <Image src={`${getEnvUrl()}${firstPost.attributes.cover.data.attributes.url}`} radius="sm" height={350} alt={firstPost.attributes.cover.data.attributes.alternativeText} sx={{ boxShadow: theme.shadows.sm }} withPlaceholder />
-                    </Box>
-                </Link>
-            </Col>
-
-            <Col span={12} md={5}>
-                <Link href={`/post/${encodeURIComponent(firstPost.attributes.slug)}`} passHref>
-                    <Box component="a" sx={{
-                        textDecoration: "none"
-                    }}>
-                        <Group position="apart" style={{marginBottom: 5, marginTop: theme.spacing.sm}}>
-                            <Text color="gray">Publié le {formatDate(firstPost.attributes.publishedAt)}</Text>
-                            <Group spacing="sm">
-                                {firstPost.attributes.category.data &&
-                                    <Badge color={firstPost.attributes.category.data.attributes.color}>{firstPost.attributes.category.data.attributes.title}</Badge>
-                                }
-                                <Badge variant="filled" color="red">Nouveau</Badge>
-                            </Group>
-                        </Group>
-                        <Title style={{ fontSize: "3rem" }} sx={(theme) => ({
-                            paddingBottom: theme.spacing.lg,
-                            display: 'inline-block',
+        <>
+            <Grid sx={() => ({ marginBottom: "50px" })}>
+                <Grid.Col span={12} md={7} mb="xl">
+                    <Link href={`/post/${encodeURIComponent(firstPost.attributes.slug)}`} passHref>
+                        <Box component="a" sx={{
                             '&:hover': {
-                                textDecoration: "underline"
+                                cursor: 'pointer'
                             }
-                        })}>{firstPost.attributes.title}</Title>
-                    </Box>
-                </Link>
-                <ReactMarkdown components={{
-                    p: ({node, ...props}) => <Text size="md" lineClamp={7} {...props} />
-                }}>
-                    {getDescription(firstPost.attributes.content)}
-                </ReactMarkdown>
-            </Col>
-
-            {posts.map(post =>
-                <Col span={12} sm={6} md={4} key={post.id}>
-                    <Link href={`/post/${encodeURIComponent(post.attributes.slug)}`} passHref>
-                        <Card shadow="sm" padding="lg" component="a">
-                            <Card.Section>
-                                <Image src={`${getEnvUrl()}${post.attributes.cover.data.attributes.url}`} height={160} alt={post.attributes.cover.data.attributes.alternativeText} withPlaceholder />
-                            </Card.Section>
-
-                            <Group position="apart" style={{ marginBottom: 5, marginTop: theme.spacing.sm }}>
-                                <Text weight={500}>{post.attributes.title}</Text>
-                                {post.attributes.category.data &&
-                                    <Badge color={post.attributes.category.data.attributes.color}>{post.attributes.category.data.attributes.title}</Badge>
-                                }
-                            </Group>
-
-                            <Text size="sm" style={{color: secondaryColor, lineHeight: 1.5}}>
-                                Posté le {formatDate(post.attributes.publishedAt)}
-                            </Text>
-
-                            <Button variant="light" color="blue" fullWidth style={{marginTop: 14}}>
-                                Voir l&apos;article
-                            </Button>
-                        </Card>
+                        }}>
+                            <Image src={`${getEnvUrl()}${firstPost.attributes.cover.data.attributes.url}`} radius="md" height={350} alt={firstPost.attributes.cover.data.attributes.alternativeText} sx={{ boxShadow: theme.shadows.sm }} withPlaceholder />
+                        </Box>
                     </Link>
-                </Col>
-            )}
-        </Grid>
+                </Grid.Col>
+
+                <Grid.Col span={12} md={5}>
+                    <Link href={`/post/${encodeURIComponent(firstPost.attributes.slug)}`} passHref>
+                        <Box component="a" sx={{
+                            textDecoration: "none"
+                        }}>
+                            <Group position="apart" style={{marginBottom: 5, marginTop: theme.spacing.sm}}>
+                                <Text color="gray">Publié le {formatDate(firstPost.attributes.publishedAt)}</Text>
+                                <Group spacing="sm">
+                                    {firstPost.attributes.category.data &&
+                                        <Badge color={firstPost.attributes.category.data.attributes.color}>{firstPost.attributes.category.data.attributes.title}</Badge>
+                                    }
+                                    <Badge variant="filled" color="red">Nouveau</Badge>
+                                </Group>
+                            </Group>
+                            <Title style={{ fontSize: "3rem" }} sx={(theme) => ({
+                                paddingBottom: theme.spacing.lg,
+                                display: 'inline-block',
+                                '&:hover': {
+                                    textDecoration: "underline"
+                                }
+                            })}>{firstPost.attributes.title}</Title>
+                        </Box>
+                    </Link>
+                    <ReactMarkdown components={{
+                        p: ({node, ...props}) => <Text size="md" lineClamp={7} {...props} />
+                    }}>
+                        {getDescription(firstPost.attributes.content)}
+                    </ReactMarkdown>
+                </Grid.Col>
+            </Grid>
+
+            <Grid gutter="xl">
+                {posts.map(post =>
+                    <Grid.Col span={12} sm={6} key={post.id}>
+                        <PostCard post={post} />
+                    </Grid.Col>
+                )}
+            </Grid>
+        </>
     );
 }
 
@@ -126,8 +105,6 @@ export async function getStaticProps() {
                                     }
                                 }
                             }
-                            createdAt
-                            updatedAt
                             publishedAt
                         }
                     }
